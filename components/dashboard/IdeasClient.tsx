@@ -76,24 +76,10 @@ export default function IdeasClient({ initialIdeas }: IdeasClientProps) {
     setIsDeleting(false);
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 p-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
-              <CardSkeleton key={i} />
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 p-8">
       <div className="max-w-7xl mx-auto">
-        {/* Header Section */}
+        {/* Header Section - Always Visible */}
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-4xl font-extrabold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-2">
@@ -124,7 +110,50 @@ export default function IdeasClient({ initialIdeas }: IdeasClientProps) {
           </Button>
         </div>
 
-        {ideas.length === 0 ? (
+        {/* Loading State - Only for Cards */}
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200/50 overflow-hidden animate-pulse"
+              >
+                {/* Skeleton Header */}
+                <div className="bg-gradient-to-r from-blue-100 via-purple-100 to-pink-100 p-6 border-b border-gray-200/50">
+                  <div className="h-6 bg-gradient-to-r from-blue-200 to-purple-200 rounded-lg w-3/4 mb-3"></div>
+                  <div className="h-4 bg-blue-100 rounded-lg w-full mb-2"></div>
+                  <div className="h-4 bg-blue-100 rounded-lg w-2/3"></div>
+                </div>
+                
+                {/* Skeleton Body */}
+                <div className="p-6">
+                  <div className="flex gap-6 mb-6">
+                    <div className="flex items-center gap-2">
+                      <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl"></div>
+                      <div>
+                        <div className="h-3 bg-blue-100 rounded w-16 mb-2"></div>
+                        <div className="h-5 bg-gradient-to-r from-blue-200 to-purple-200 rounded w-8"></div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-10 h-10 bg-gradient-to-br from-purple-100 to-purple-200 rounded-xl"></div>
+                      <div>
+                        <div className="h-3 bg-purple-100 rounded w-16 mb-2"></div>
+                        <div className="h-5 bg-gradient-to-r from-purple-200 to-pink-200 rounded w-8"></div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Skeleton Buttons */}
+                  <div className="flex gap-3">
+                    <div className="flex-1 h-10 bg-gradient-to-r from-blue-100 to-purple-100 rounded-lg"></div>
+                    <div className="w-10 h-10 bg-red-100 rounded-lg"></div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : ideas.length === 0 ? (
           <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-200/50 p-16 text-center">
             <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
               <svg
@@ -373,227 +402,3 @@ export default function IdeasClient({ initialIdeas }: IdeasClientProps) {
     </div>
   );
 }
-
-// "use client";
-
-// import { useState } from "react";
-// import Link from "next/link";
-// import toast from "react-hot-toast";
-// import { useIdeas } from "@/hooks/useIdeas";
-// import { Button } from "@/components/ui/button";
-// import {
-//   Card,
-//   CardHeader,
-//   CardTitle,
-//   CardContent,
-//   CardFooter,
-// } from "@/components/ui/card";
-// import {
-//   Dialog,
-//   DialogContent,
-//   DialogHeader,
-//   DialogTitle,
-//   DialogDescription,
-//   DialogFooter,
-// } from "@/components/ui/dialog";
-// import { Input } from "@/components/ui/input";
-// import { Textarea } from "@/components/ui/textarea";
-// import { CardSkeleton } from "@/components/ui/Loader";
-// import type { Idea } from "@/types";
-
-// interface IdeasClientProps {
-//   initialIdeas: Idea[];
-// }
-
-// export default function IdeasClient({ initialIdeas }: IdeasClientProps) {
-//   const { ideas, createIdea, deleteIdea, isLoading } = useIdeas({
-//     initial: initialIdeas,
-//     autoFetch: false,
-//   });
-//   const [showModal, setShowModal] = useState(false);
-//   const [title, setTitle] = useState("");
-//   const [description, setDescription] = useState("");
-//   const [isSubmitting, setIsSubmitting] = useState(false);
-
-//   const handleCreateIdea = async (e: React.FormEvent) => {
-//     e.preventDefault();
-//     setIsSubmitting(true);
-//     const res = await createIdea(title, description);
-//     if (res.success) {
-//       setTitle("");
-//       setDescription("");
-//       setShowModal(false);
-//       toast.success("Idea created successfully!");
-//     } else {
-//       toast.error(res.error || "Failed to create idea");
-//     }
-//     setIsSubmitting(false);
-//   };
-
-//   const handleDelete = async (id: string) => {
-//     if (!confirm("Are you sure you want to delete this idea?")) return;
-//     const res = await deleteIdea(id);
-//     if (res.success) {
-//       toast.success("Idea deleted successfully!");
-//     } else {
-//       toast.error(res.error || "Failed to delete idea");
-//     }
-//   };
-
-//   if (isLoading) {
-//     return (
-//       <div className="space-y-6">
-//         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-//           {[1, 2, 3].map((i) => (
-//             <CardSkeleton key={i} />
-//           ))}
-//         </div>
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <>
-//       <div className="flex justify-between items-center mb-6">
-//         <h1 className="text-3xl font-bold text-gray-900">Your Ideas</h1>
-//         <Button onClick={() => setShowModal(true)}>+ New Idea</Button>
-//       </div>
-
-//       {ideas.length === 0 ? (
-//         <Card className="text-center py-12">
-//           <CardContent>
-//             <h3 className="mt-2 text-lg font-medium text-gray-900">
-//               No ideas yet
-//             </h3>
-//             <p className="mt-2 text-sm text-gray-500">
-//               Get started by creating your first idea!
-//             </p>
-//             <Button className="mt-6" onClick={() => setShowModal(true)}>
-//               Create Your First Idea
-//             </Button>
-//           </CardContent>
-//         </Card>
-//       ) : (
-//         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-//           {ideas.map((idea) => (
-//             <Card key={idea.id} hover>
-//               <CardHeader>
-//                 <CardTitle>{idea.title}</CardTitle>
-//               </CardHeader>
-//               <CardContent>
-//                 <p className="text-gray-600 line-clamp-3">{idea.description}</p>
-//                 <div className="flex gap-4 mt-4 text-sm text-gray-500">
-//                   <span className="flex items-center gap-1">
-//                     <svg
-//                       className="w-4 h-4"
-//                       fill="none"
-//                       viewBox="0 0 24 24"
-//                       stroke="currentColor"
-//                     >
-//                       <path
-//                         strokeLinecap="round"
-//                         strokeLinejoin="round"
-//                         strokeWidth={2}
-//                         d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-//                       />
-//                     </svg>
-//                     {idea._count?.messages || 0}
-//                   </span>
-//                   <span className="flex items-center gap-1">
-//                     <svg
-//                       className="w-4 h-4"
-//                       fill="none"
-//                       viewBox="0 0 24 24"
-//                       stroke="currentColor"
-//                     >
-//                       <path
-//                         strokeLinecap="round"
-//                         strokeLinejoin="round"
-//                         strokeWidth={2}
-//                         d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
-//                       />
-//                     </svg>
-//                     {idea._count?.tasks || 0}
-//                   </span>
-//                 </div>
-//               </CardContent>
-//               <CardFooter>
-//                 <div className="flex gap-2 w-full">
-//                   <Link
-//                     href={`/dashboard/workspace/${idea.id}`}
-//                     className="flex-1"
-//                   >
-//                     <Button className="w-full">Open Workspace</Button>
-//                   </Link>
-//                   <Button
-//                     variant="destructive"
-//                     onClick={() => handleDelete(idea.id)}
-//                   >
-//                     Delete
-//                   </Button>
-//                 </div>
-//               </CardFooter>
-//             </Card>
-//           ))}
-//         </div>
-//       )}
-
-//       <Dialog open={showModal} onOpenChange={setShowModal}>
-//         <DialogContent className="bg-white">
-//           <DialogHeader>
-//             <DialogTitle className="text-gray-900">Create New Idea</DialogTitle>
-//             <DialogDescription className="text-gray-600">
-//               Enter a title and description for your new idea.
-//             </DialogDescription>
-//           </DialogHeader>
-
-//           <form
-//             onSubmit={(e) => {
-//               e.preventDefault();
-//               handleCreateIdea();
-//             }}
-//             className="space-y-4"
-//           >
-//             <div className="space-y-2">
-//               <label className="text-sm font-medium text-gray-900">Title</label>
-//               <Input
-//                 placeholder="Enter idea title..."
-//                 value={title}
-//                 onChange={(e) => setTitle(e.target.value)}
-//                 required
-//               />
-//             </div>
-//             <div className="space-y-2">
-//               <label className="text-sm font-medium text-gray-900">
-//                 Description
-//               </label>
-//               <Textarea
-//                 placeholder="Describe your idea..."
-//                 value={description}
-//                 onChange={(e) => setDescription(e.target.value)}
-//                 rows={4}
-//                 required
-//               />
-//             </div>
-//           </form>
-
-//           <DialogFooter>
-//             <Button
-//               variant="outline"
-//               onClick={() => setShowModal(false)}
-//               disabled={isSubmitting}
-//             >
-//               Cancel
-//             </Button>
-//             <Button
-//               onClick={handleCreateIdea}
-//               disabled={!title || !description || isSubmitting}
-//             >
-//               {isSubmitting ? "Creating..." : "Create Idea"}
-//             </Button>
-//           </DialogFooter>
-//         </DialogContent>
-//       </Dialog>
-//     </>
-//   );
-// }
