@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
       Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
       "HTTP-Referer":
-        process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+        process.env.NEXT_PUBLIC_SITE_URL || "https://ai-idea-workspace.vercel.app",
       "X-Title": "AI Idea Workspace",
     };
 
